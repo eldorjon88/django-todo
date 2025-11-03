@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>My Tasks</h1>
+
+    {% if tasks %}
+      <ul class="task-list">
+        {% for task in tasks %}
+          <li class="task-item">
+            <div class="task-header">
+              <h3 class="task-title">
+                <a href="{% url 'todos:detail' task.id %}"> {{ task.title }} </a>
+              </h3>
+              <span class="status {{ task.status }}">{{ task.status|title }}</span>
+            </div>
+            {% if task.description %}
+              <p class="description">{{ task.description }}</p>
+            {% endif %}
+            <div class="meta">
+              <span class="priority {{ task.priority }}">Priority: {{ task.priority|title }}</span>
+              {% if task.deadline %}
+                <span class="deadline">Deadline: {{ task.deadline }}</span>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">No tasks added yet.</p>
+    {% endif %}
+
+    <a href="{% url 'todos:add' %}" class="add-btn">+ Add New Task</a>
+  </div>
+</body>
+</html>

@@ -1,12 +1,17 @@
 from uuid import uuid4
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.http import HttpRequest, HttpResponse
 
 
 task_list = []
 
-def add_task(request: HttpRequest) -> HttpResponse:
+def get_task_list_view(request: HttpRequest) -> HttpResponse:
+    return render(request=request, template_name='list.html', context={'tasks': task_list})
+
+
+def add_task_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         return render(request=request, template_name='add.html')
     elif request.method == 'POST':
@@ -38,5 +43,11 @@ def add_task(request: HttpRequest) -> HttpResponse:
             }
             task_list.append(new_task)
 
-            return HttpResponse('ok')
+            return redirect(reverse('todos:list'))
     
+
+def task_detail_view(request: HttpRequest, task_id: str) -> HttpResponse:
+    for task in task_list:
+        if task['id'] == task_id:
+            return render(request=request, template_name='detail.html', context={'task': task})
+    return redirect(reverse('todos:list'))
